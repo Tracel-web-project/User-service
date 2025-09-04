@@ -45,10 +45,8 @@ jobs:
 
       - name: Update Kustomization
         run: |
-         kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }} \
-         --load-restrictor=LoadRestrictionsNone \
-         --reorder=legacy \
-         --kustomization gitops/${{ env.GITOPS_DEPLOYMENT_PATH }}/kustomization.yaml
+         cd gitops/${{ env.GITOPS_DEPLOYMENT_PATH }}
+         kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }}
 
 
 
