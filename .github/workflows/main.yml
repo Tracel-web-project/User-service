@@ -50,7 +50,7 @@ jobs:
         env:
          SERVICE: user-service
          IMAGE_SHA: ${{ env.IMAGE_SHA }}
-         GITOPS_DEPLOYMENT_PATH: base/ user-service
+         GITOPS_DEPLOYMENT_PATH: base/user-service
 
 
       - name: Commit and Push changes
