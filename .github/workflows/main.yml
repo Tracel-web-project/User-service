@@ -9,8 +9,8 @@ env:
   SERVICE: user-service
   IMAGE_SHA: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:${{ github.sha }}
   IMAGE_LATEST: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:latest
-  GITOPS_REPO: Tracel-web-project/Travel-gitOps   
-  GITOPS_DEPLOYMENT_PATH: base/user-service
+  GITOPS_REPO: Tracel-web-project/Travel-gitOps
+  GITOPS_DEPLOYMENT_PATH: base/user-service/kustomization.yaml
   GITOPS_BRANCH_PREFIX: ci/update-user-service
 
 jobs:
@@ -41,14 +41,12 @@ jobs:
         with:
           repository: ${{ env.GITOPS_REPO }}
           path: gitops
-          token: ${{ secrets.GITOPS_PAT }}   
+          token: ${{ secrets.GITOPS_PAT }}
 
       - name: Update Kustomization
         run: |
-         cd gitops/${{ env.GITOPS_DEPLOYMENT_PATH }}
-         kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }}
-
-
+          cd gitops/base/user-service
+          kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }}
 
       - name: Commit and Push changes
         run: |
