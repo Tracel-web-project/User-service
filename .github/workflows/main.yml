@@ -1,0 +1,59 @@
+name: CI - Build and Push User Service
+
+on:
+  push:
+    branches:
+      - main
+
+env:
+  SERVICE: user-service
+  IMAGE_SHA: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:${{ github.sha }}
+  IMAGE_LATEST: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:latest
+  GITOPS_REPO: Tracel-web-project/Travel-gitOps
+  GITOPS_DEPLOYMENT_PATH: base/user-service
+  GITOPS_BRANCH_PREFIX: ci/update-user-service
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Log in to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_PASSWORD }}
+
+      - name: Build and Push Docker Image
+        uses: docker/build-push-action@v4
+        with:
+          context: .
+          push: true
+          tags: |
+            ${{ env.IMAGE_SHA }}
+            ${{ env.IMAGE_LATEST }}
+
+      - name: Checkout GitOps repo
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ env.GITOPS_REPO }}
+          path: gitops
+          token: ${{ secrets.GITOPS_PAT }}
+
+      - name: Update Kustomization
+        run: |
+          cd gitops/${{ env.GITOPS_DEPLOYMENT_PATH }}
+          kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }}
+
+      - name: Commit and Push changes
+        run: |
+          cd gitops
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git checkout -b ${{ env.GITOPS_BRANCH_PREFIX }}-${{ github.sha }}
+          git add .
+          git commit -m "Update ${{ env.SERVICE }} image to ${{ env.IMAGE_SHA }}"
+          git push origin HEAD
