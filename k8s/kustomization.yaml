@@ -8,6 +8,7 @@ resources:
   - ../user-service-deployment.yaml
   - ../user-service-policy.yaml
   - ../user-service.yaml
+  - ../mysql-secret.yaml
 
 images:
   - name: sheethalshobi/user-service   # replaced at build time with GitHub SHA
