@@ -1,0 +1,15 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - ../user-db-statefulset.yaml
+  - ../user-db2-pv.yaml
+  - ../user-pv-new.yaml
+  - ../user-service-deployment.yaml
+  - ../user-service-policy.yaml
+  - ../user-service.yaml
+
+images:
+  - name: sheethalshobi/user-service   # replaced at build time with GitHub SHA
+    newName: sheethalshobi/user-service
+    newTag: PLACEHOLDER
