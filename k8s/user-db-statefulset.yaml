@@ -1,0 +1,29 @@
+piVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: user-db
+spec:
+  serviceName: "user-db"
+  replicas: 1
+  selector:
+    matchLabels:
+      app: user-db
+  template:
+    metadata:
+      labels:
+        app: user-db
+    spec:
+      containers:
+        - name: sqlite
+          image: nouchka/sqlite3:latest
+          command: ["sh", "-c", "tail -f /dev/null"]
+          volumeMounts:
+            - name: sqlite-data
+              mountPath: /data
+          env:
+            - name: SQLITE_FILE
+              value: /data/user.db
+      volumes:
+        - name: sqlite-data
+          persistentVolumeClaim:
+            claimName: sqlite-data-user-db
