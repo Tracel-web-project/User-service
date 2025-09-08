@@ -10,7 +10,7 @@ env:
   IMAGE_SHA: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:${{ github.sha }}
   IMAGE_LATEST: ${{ secrets.DOCKERHUB_USERNAME }}/user-service:latest
   GITOPS_REPO: Tracel-web-project/Travel-gitOps
-  GITOPS_DEPLOYMENT_PATH: base/user-service/kustomization.yaml
+  GITOPS_DEPLOYMENT_PATH: apps/dev/user/kustomization.yaml
   GITOPS_BRANCH_PREFIX: ci/update-user-service
 
 jobs:
