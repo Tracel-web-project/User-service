@@ -45,7 +45,7 @@ jobs:
 
       - name: Update Kustomization
         run: |
-          cd gitops/base/user-service
+          cd gitops/apps/dev/user
           kustomize edit set image ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.SERVICE }}=${{ env.IMAGE_SHA }}
 
       - name: Commit and Push changes
