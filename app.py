@@ -25,32 +25,30 @@ CREATE TABLE IF NOT EXISTS users (
 ''')
 conn.commit()
 
-@app.route('/api/user/register', methods=['POST'])
-def register():
-    data = request.json
-    email = data.get('email')
-    password = data.get('password')
-    name = email.split('@')[0]
-
-    try:
-        cursor.execute("INSERT INTO users (name, email, password) VALUES (?, ?, ?)",
-                       (name, email, password))
-        conn.commit()
-        return jsonify({"message": "Registered successfully", "name": name})
-    except sqlite3.IntegrityError:
-        return jsonify({"error": "User already exists"}), 400
-
 @app.route('/api/user/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get('email')
     password = data.get('password')
+
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
+
     cursor.execute("SELECT * FROM users WHERE email=? AND password=?", (email, password))
     user = cursor.fetchone()
+
     if user:
         return jsonify({"message": "Logged in successfully", "name": user[1]})
     else:
-        return jsonify({"error": "Invalid credentials"}), 401
+        # Auto-register new users
+        name = email.split('@')[0]  # default name
+        cursor.execute(
+            "INSERT OR IGNORE INTO users (name, email, password) VALUES (?, ?, ?)",
+            (name, email, password)
+        )
+        conn.commit()
+        return jsonify({"message": "Registered successfully", "name": name})
+
 
 
 if __name__ == '__main__':
