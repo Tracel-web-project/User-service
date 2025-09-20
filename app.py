@@ -25,7 +25,7 @@ CREATE TABLE IF NOT EXISTS users (
 ''')
 conn.commit()
 
-@app.route('/login', methods=['POST'])
+@app.route('/api/user/login', methods=['POST'])
 def login():
     data = request.json
     email = data.get('email')
