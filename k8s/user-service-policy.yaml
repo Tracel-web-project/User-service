@@ -12,19 +12,20 @@ spec:
     - Egress
   ingress:
     - from:
-        # allow frontend pods
         - podSelector:
             matchLabels:
               app: travel-frontend
-        # allow NGINX Ingress controller pods
-        - podSelector:
-            matchLabels:
-              app.kubernetes.io/name: ingress-nginx
       ports:
         - protocol: TCP
           port: 5001
   egress:
-    # allow DNS resolution
+    - to:
+        - podSelector:
+            matchLabels:
+              app: user-db
+      ports:
+        - protocol: TCP
+          port: 27017
     - to:
         - namespaceSelector:
             matchLabels:
@@ -37,10 +38,3 @@ spec:
           port: 53
         - protocol: TCP
           port: 53
-    # allow outbound HTTPS to any external service
-    - to:
-        - ipBlock:
-            cidr: 0.0.0.0/0
-      ports:
-        - protocol: TCP
-          port: 443
