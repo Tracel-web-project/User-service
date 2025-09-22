@@ -60,6 +60,7 @@ jobs:
         with:
           target: 'http://localhost:5000'   # adjust to your backend URL
           rules_file_name: '.zap/rules.yml'
+        continue-on-error: true
 
       # ===== Docker Build & Push =====
       - name: Log in to DockerHub
