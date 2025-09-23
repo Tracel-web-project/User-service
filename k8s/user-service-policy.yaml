@@ -20,13 +20,6 @@ spec:
           port: 5001
   egress:
     - to:
-        - podSelector:
-            matchLabels:
-              app: user-db
-      ports:
-        - protocol: TCP
-          port: 27017
-    - to:
         - namespaceSelector:
             matchLabels:
               kubernetes.io/metadata.name: kube-system
