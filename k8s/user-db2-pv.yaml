@@ -7,7 +7,7 @@ spec:
     storage: 5Gi
   accessModes:
     - ReadWriteOnce
-  storageClassName: ""   # must match the PVC
-  hostPath:              # 👈 works only on single-node/dev clusters
+  storageClassName: ""   
+  hostPath:              
     path: /mnt/sqlite-user-db
     type: DirectoryOrCreate
